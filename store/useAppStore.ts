@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { ThemeSettings, TerminalCommand, FileNode } from "@/types";
+import type { ThemeSettings, TerminalCommand } from "@/types";
 
 interface AppState {
   // Theme
