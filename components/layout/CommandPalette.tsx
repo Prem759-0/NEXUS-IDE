@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useAppStore } from "@/store/useAppStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, FileCode, Terminal, Settings, LayoutDashboard, Cpu, MemoryStick, BarChart3, X } from "lucide-react";
+import { Search, FileCode, Terminal, Settings, LayoutDashboard, Cpu, MemoryStick, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const commands = [
