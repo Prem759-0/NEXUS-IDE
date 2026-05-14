@@ -8,9 +8,9 @@ import { Play, Pause, SkipBack, SkipForward, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function AlgorithmVisualizer() {
-  const [currentStep, setCurrentStep] = useState<<number>(0);
-  const [isPlaying, setIsPlaying] = useState<<boolean>(false);
-  const [speed, setSpeed] = useState<<number>(1000);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [speed, setSpeed] = useState<number>(1000);
 
   const step = algorithmSteps[currentStep];
   const maxBar = Math.max(...(step.array || []));
