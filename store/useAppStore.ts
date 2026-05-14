@@ -3,23 +3,19 @@ import { persist } from "zustand/middleware";
 import type { ThemeSettings, TerminalCommand } from "@/types";
 
 interface AppState {
-  // Theme
   theme: ThemeSettings;
   setTheme: (theme: Partial<<ThemeSettings>) => void;
 
-  // Terminal
   commands: TerminalCommand[];
   addCommand: (cmd: TerminalCommand) => void;
   clearCommands: () => void;
 
-  // Files
   activeFile: string | null;
   openFiles: string[];
   setActiveFile: (id: string | null) => void;
   openFile: (id: string) => void;
   closeFile: (id: string) => void;
 
-  // UI
   sidebarCollapsed: boolean;
   toggleSidebar: () => void;
   activePanel: string;
@@ -27,7 +23,6 @@ interface AppState {
   commandPaletteOpen: boolean;
   setCommandPaletteOpen: (open: boolean) => void;
 
-  // Notifications
   notifications: Array<{ id: string; title: string; message: string; type: string; read: boolean }>;
   addNotification: (notification: Omit<<AppState["notifications"][0], "id" | "read">) => void;
   markNotificationRead: (id: string) => void;
@@ -35,7 +30,7 @@ interface AppState {
 
 export const useAppStore = create<<AppState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       theme: {
         mode: "dark",
         accentColor: "cyan",
