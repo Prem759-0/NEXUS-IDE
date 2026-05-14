@@ -22,7 +22,7 @@ export function CommandPalette() {
   const { commandPaletteOpen, setCommandPaletteOpen, setActivePanel, setTheme } = useAppStore();
   const [search, setSearch] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const inputRef = useRef<<HTMLInputElement>(null);
+const inputRef = useRef<<HTMLInputElement>(null);
 
   const filtered = commands.filter((c) =>
     c.label.toLowerCase().includes(search.toLowerCase())
