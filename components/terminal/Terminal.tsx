@@ -220,8 +220,8 @@ export function Terminal() {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
-  const terminalRef = useRef<<HTMLDivElement>(null);
-  const inputRef = useRef<<HTMLInputElement>(null);
+const terminalRef = useRef<<HTMLDivElement>(null);
+const inputRef = useRef<<HTMLInputElement>(null);
 
   useEffect(() => {
     if (terminalRef.current) {
