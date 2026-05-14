@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: #0a0a0f;
+    --foreground: #e2e8f0;
+    --card: #12121a;
+    --card-foreground: #e2e8f0;
+    --popover: #1a1a25;
+    --popover-foreground: #e2e8f0;
+    --primary: #00f0ff;
+    --primary-foreground: #0a0a0f;
+    --secondary: #1a1a25;
+    --secondary-foreground: #e2e8f0;
+    --muted: #2a2a3a;
+    --muted-foreground: #6b7280;
+    --accent: #7000ff;
+    --accent-foreground: #ffffff;
+    --destructive: #ff3366;
+    --destructive-foreground: #ffffff;
+    --border: #2a2a3a;
+    --input: #2a2a3a;
+    --ring: #00f0ff;
+    --radius: 0.75rem;
+  }
+
+  .light {
+    --background: #fafafa;
+    --foreground: #0a0a0f;
+    --card: #ffffff;
+    --card-foreground: #0a0a0f;
+    --popover: #ffffff;
+    --popover-foreground: #0a0a0f;
+    --primary: #0066cc;
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0a0a0f;
+    --muted: #e2e8f0;
+    --muted-foreground: #64748b;
+    --accent: #7c3aed;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #0066cc;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-nexus-bg text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  ::selection {
+    background: rgba(0, 240, 255, 0.3);
+    color: #ffffff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a3a;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3a4a;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-nexus-surface/80 backdrop-blur-xl border border-nexus-border/50;
+  }
+
+  .terminal-text {
+    @apply font-mono text-sm leading-relaxed;
+  }
+
+  .glow-cyan {
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
+  }
+
+  .glow-purple {
+    text-shadow: 0 0 10px rgba(112, 0, 255, 0.5), 0 0 20px rgba(112, 0, 255, 0.3);
+  }
+
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(var(--background), var(--background)) padding-box,
+                linear-gradient(135deg, #00f0ff, #7000ff, #ff0080) border-box;
+    border: 1px solid transparent;
+  }
+
+  .scanline {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scanline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(0, 240, 255, 0.02) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 10;
+  }
+}
