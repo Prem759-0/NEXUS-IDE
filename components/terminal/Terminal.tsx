@@ -138,4 +138,225 @@ const AVAILABLE_COMMANDS: Record<string, (args: string[]) => string[]> = {
     "  0x401000        [4096 B]  ALLOCATED  .text segment",
     "  0x402000        [2048 B]  ALLOCATED  .data segment",
     "",
-    "
+    "Summary:",
+    "  Total:     8,064 B",
+    "  Used:      7,872 B (97.6%)",
+    "  Free:        128 B ( 1.6%)",
+    "  Leaked:       64 B ( 0.8%) ⚠",
+  ],
+  git: () => [
+    "On branch main",
+    "Your branch is ahead of 'origin/main' by 3 commits.",
+    "",
+    "Changes to be committed:",
+    "  (use \"git restore --staged <file>...\" to unstage)",
+    "        modified:   src/main.cpp",
+    "        modified:   src/algorithm.py",
+    "        new file:   tests/benchmark.py",
+    "",
+    "Changes not staged for commit:",
+    "  (use \"git add <file>...\" to update what will be committed)",
+    "        modified:   CMakeLists.txt",
+    "",
+    "Untracked files:",
+    "  (use \"git add <file>...\" to include in what will be committed)",
+    "        build/",
+    "        .cache/",
+    "",
+    "Last 3 commits:",
+    "  a3f7d2e  feat: implement memory pool allocator",
+    "  8b2c1a9  refactor: optimize quicksort partition",
+    "  4e5d8f1  fix: resolve Python 3.12 deprecation warnings",
+  ],
+  python: () => [
+    "Python 3.12.0 (main, Nov 15 2024, 10:23:45) [Clang 17.0.0]",
+    "Type 'help', 'copyright', 'credits' or 'license' for more info.",
+    ">>> import numpy as np",
+    ">>> data = np.random.randint(0, 1000, 1000)",
+    ">>> sorter = OptimizedSorter(data.tolist())",
+    ">>> result = sorter.quicksort()",
+    ">>> print(f\"Comparisons: {sorter.comparisons}\")",
+    "Comparisons: 8765",
+    ">>> print(f\"Swaps: {sorter.swaps}\")",
+    "Swaps: 3421",
+    ">>> print(f\"Time complexity: {sorter.stats['complexity']}\")",
+    "Time complexity: O(n log n) avg",
+    ">>> ",
+  ],
+  cpp: () => [
+    "clang version 17.0.0",
+    "Target: x86_64-pc-linux-gnu",
+    "Thread model: posix",
+    "",
+    "Compilation flags:",
+    "  -std=c++20",
+    "  -O3",
+    "  -march=native",
+    "  -flto",
+    "  -Wall -Wextra -Wpedantic",
+    "  -fmodules-ts",
+    "",
+    "Preprocessing main.cpp...",
+    "Compiling main.cpp...",
+    "In file included from src/main.cpp:1:",
+    "In file included from /usr/include/c++/v1/iostream:37:",
+    "/usr/include/c++/v1/ios:216:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]",
+    "",
+    "Linking...",
+    "Generating code...",
+    "Optimization report: 47 functions inlined, 12 loops vectorized",
+    "",
+    "Build successful: ./build/nexus-core (2.4 MB)",
+  ],
+  uptime: () => [
+    " 09:23:45 up 5 days, 12:34,  3 users,  load average: 1.23, 0.89, 0.76",
+  ],
+  whoami: () => ["nexus-dev"],
+  exit: () => ["Session terminated. Goodbye.", ""],
+};
+
+export function Terminal() {
+  const { commands, addCommand, clearCommands } = useAppStore();
+  const [input, setInput] = useState("");
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const terminalRef = useRef<<HTMLDivElement>(null);
+  const inputRef = useRef<<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [commands]);
+
+  const executeCommand = (cmd: string) => {
+    const trimmed = cmd.trim();
+    if (!trimmed) return;
+
+    const [command, ...args] = trimmed.split(" ");
+    const handler = AVAILABLE_COMMANDS[command.toLowerCase()];
+
+    const newCmd: TerminalCommand = {
+      id: crypto.randomUUID(),
+      input: trimmed,
+      output: handler ? handler(args) : [`Command not found: ${command}. Type 'help' for available commands.`],
+      timestamp: new Date(),
+      type: handler ? "success" : "error",
+    };
+
+    addCommand(newCmd);
+    setHistory((prev) => [...prev, trimmed]);
+    setHistoryIndex(-1);
+    setInput("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      executeCommand(input);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHistoryIndex((i) => {
+        const newIndex = Math.min(i + 1, history.length - 1);
+        if (newIndex >= 0) setInput(history[history.length - 1 - newIndex]);
+        return newIndex;
+      });
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHistoryIndex((i) => {
+        const newIndex = Math.max(i - 1, -1);
+        setInput(newIndex >= 0 ? history[history.length - 1 - newIndex] : "");
+        return newIndex;
+      });
+    }
+  };
+
+  return (
+    <div className="flex h-full flex-col rounded-xl border border-nexus-border/50 bg-nexus-bg overflow-hidden">
+      <div className="flex items-center justify-between border-b border-nexus-border/50 px-4 py-2">
+        <div className="flex items-center gap-2">
+          <TerminalIcon size={16} className="text-nexus-primary" />
+          <span className="font-mono text-sm font-semibold">nexus@dev: ~/nexus-project</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={clearCommands} className="rounded p-1.5 text-nexus-muted hover:bg-nexus-elevated hover:text-nexus-error transition-colors" title="Clear">
+            <Trash size={14} />
+          </button>
+          <button className="rounded p-1.5 text-nexus-muted hover:bg-nexus-elevated hover:text-nexus-foreground transition-colors" title="Copy">
+            <Copy size={14} />
+          </button>
+          <button className="rounded p-1.5 text-nexus-muted hover:bg-nexus-elevated hover:text-nexus-foreground transition-colors" title="Export">
+            <Download size={14} />
+          </button>
+        </div>
+      </div>
+
+      <div
+        ref={terminalRef}
+        className="flex-1 overflow-y-auto p-4 font-mono text-sm space-y-1"
+        onClick={() => inputRef.current?.focus()}
+      >
+        {commands.length === 0 && WELCOME_MESSAGE.map((line, i) => (
+          <div key={i} className="text-nexus-muted whitespace-pre-wrap">{line}</div>
+        ))}
+
+        <AnimatePresence>
+          {commands.map((cmd) => (
+            <motion.div
+              key={cmd.id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="space-y-1"
+            >
+              <div className="flex items-center gap-2 text-nexus-primary">
+                <span className="text-nexus-success">➜</span>
+                <span className="text-nexus-secondary">~</span>
+                <span className="text-nexus-foreground">{cmd.input}</span>
+              </div>
+              {cmd.output.map((line, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    "whitespace-pre-wrap pl-4",
+                    cmd.type === "error" && "text-nexus-error",
+                    cmd.type === "success" && "text-nexus-foreground",
+                    line.includes("✓") && "text-nexus-success",
+                    line.includes("●") && "text-nexus-warning",
+                    line.includes("○") && "text-nexus-muted",
+                    line.includes("⚠") && "text-nexus-warning",
+                    line.includes("FAILED") && "text-nexus-error font-bold"
+                  )}
+                >
+                  {line}
+                </div>
+              ))}
+              <div className="text-xs text-nexus-muted pl-4">
+                [{formatDate(cmd.timestamp)}]
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+
+        <div className="flex items-center gap-2 pt-2">
+          <span className="text-nexus-success">➜</span>
+          <span className="text-nexus-secondary">~</span>
+          <span className="text-nexus-muted">$</span>
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="flex-1 bg-transparent text-nexus-foreground outline-none font-mono"
+            placeholder="Type a command..."
+            autoFocus
+          />
+          <motion.span
+            className="inline-block h-4 w-2 bg-nexus-primary"
+            animate={{ opacity: [1, 0] }}
+            transition={{ duration: 0.8, repeat: Infinity }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
